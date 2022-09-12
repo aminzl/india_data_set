@@ -35,6 +35,9 @@ select concat(format(avg(growth)*100,2),'%') as average_growth from dataset1; --
 then we multiped the result by 100 to find the percentage , after that we used the format() function to round the
 number with two decimal places , lastely using concat() function we added the '%' sign the the result */
 
+-- now we want to know the average growth of each state
+select state , concat(format(avg(growth)*100,2),'%') as average_growth_per_state from dataset1 group by state;
+
 
 
 
