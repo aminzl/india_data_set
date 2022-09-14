@@ -98,6 +98,12 @@ select distinct state from dataset1 where lower(state) like 'a%'or lower(state) 
 -- states starting with letter a and ending with letter m 
 select distinct state from dataset1 where lower(state) like 'a%'and lower(state) like '%m';
 
+-- next we will try to determine the total males and females using tables join
+
+select ds1.district,ds1.state,ds1.sex_ratio,ds2.population
+from dataset1 as ds1 inner join dataset2 as ds2
+on ds1.district=ds2.district;
+
 
 
 
