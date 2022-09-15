@@ -154,4 +154,11 @@ group by d.state) as e;
 
 
 
+
+select c.district ,c.state, round(c.population/1+c.growth,0) as previous_census_population  , 
+c.population as current_census_population, c.growth from 
+(select ds1.district, ds1.state, ds1.growth, ds2.population from dataset1 as ds1 inner join dataset2 as ds2
+on ds1.district=ds2.district) as c group by  c.state , c.district
+order by c.growth desc ;
+
  
