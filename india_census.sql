@@ -121,13 +121,14 @@ into equation03 or equation01 to get the number of females
 ### females = population - ( population / ( sex_ratio + 1 ))....from equation03
 ### females= ( population * sex_ratio ) / ( sex_ratio + 1 ).....from equation01
 #########################################################################################*/
-select d.state , sum(d.males) as total_males , sum(d.females) as total_females from
+
+select d.state, sum(d.males) as total_males, sum(d.females) as total_females from
 (select c.district, c.state, round(c.population/(c.sex_ratio+1),0) as males, 
 round((c.population*c.sex_ratio)/(c.sex_ratio + 1),0) as females from 
 (select ds1.district,ds1.state,ds1.sex_ratio/1000 as sex_ratio,ds2.population
 from dataset1 as ds1 inner join dataset2 as ds2
 on ds1.district=ds2.district) as c) as d
-group by d.state ;
+group by d.state;
 
 -- 15/ total literacy rate
 select d.state, sum(d.lliterate_people) as total_lliterate , sum(d.illiterate_people) as total_illiterate from
@@ -139,7 +140,16 @@ on ds1.district=ds2.district) as c) as d
 group by d.state;
 
 
+-- population in previous census
 
+select sum(e.previous_census_population) as previous_census_population, sum(e.current_census_population) as current_census_population from
+(select d.state, sum(d.previous_census_population) as previous_census_population, 
+sum(d.current_census_population) as current_census_population from
+(select c.district ,c.state, round(c.population/1+c.growth,0) as previous_census_population  , 
+c.population as current_census_population from 
+(select ds1.district, ds1.state, ds1.growth, ds2.population from dataset1 as ds1 inner join dataset2 as ds2
+on ds1.district=ds2.district) as c) as d 
+group by d.state) as e;
 
 
 
