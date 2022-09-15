@@ -1,0 +1,26 @@
+-- next we are going to do some basic math and logic
+
+females / males = sex_ratio..............equation01
+
+females + males = population..............equation02
+
+females = population - males..............equation03
+
+-- next we substitute 'females' with 'population - males' from equation03
+into equation01 
+
+population - males = sex_ratio * males
+
+population = males * ( sex_ratio + 1 )
+
+-- finaly we conclude that :
+
+### males = population / ( sex_ratio + 1 ).....equation04
+
+-- next we replace 'males' from equation04 with the new value 
+
+into equation03 or equation01 to get the number of females
+
+### females = population - ( population / ( sex_ratio + 1 ))....from equation03
+### females= ( population * sex_ratio ) / ( sex_ratio + 1 ).....from equation01
+

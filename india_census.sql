@@ -1,8 +1,8 @@
--- first of all lets create our data base and use it
+-- 01/ first of all lets create our data base and use it
 create database india_census;
 use india_census;
 
--- next we import the data sets and explore them
+-- 02/ next we import the data sets and explore them
 select * from dataset1;
 describe dataset1;
 /* we need to set district and state as a composed primery key
@@ -17,50 +17,50 @@ as a foreign key in dataset2 */
 
 
 
--- number of entities (rows) into our data sets :
+-- 03/ number of entities (rows) into our data sets :
 select count(*) as nomber_of_rows from dataset1 ; -- the result is 640.
 select count(*) as nomber_of_rows from dataset2 ; -- the result is 640.
 
 
--- dataset for jharkhand and bihar
+-- 04/ dataset for jharkhand and bihar
 select * from dataset1 where state in ('jharkhand','bihar'); -- 62 rows returned
 
 
--- calculating the total population of india from table dataset2 
+-- 05/ calculating the total population of india from table dataset2 
 select sum(population) as total_population from dataset2 ; -- '1 210 854 977'
 
--- next we want to know the average growth of india
+-- 06/ next we want to know the average growth of india
 select concat(format(avg(growth)*100,2),'%') as average_growth from dataset1; -- the average growth is'19.25%'
 /* we calculated the average growth using avg() function and we passed the column growth as its argument
 then we multiped the result by 100 to convert the result to percentage , after that we used the format() 
 function to round the number with two decimal places , lastely using concat() function we added 
 the '%' sign the the result */
 
--- now we want to know the average growth of each state
+-- 07/ now we want to know the average growth of each state
 select state , concat(format(avg(growth)*100,2),'%') as average_growth_per_state from dataset1 group by state;
 
 
--- next we want to know the average sex ratio in each state and order it from the highest to the lowest
+-- 08/ next we want to know the average sex ratio in each state and order it from the highest to the lowest
 select state , round(avg(sex_ratio),0) as average_sex_ratio from dataset1
 group by state order by average_sex_ratio desc ;
 
 
-/*moving on lets calculate the average literacy rate and display the states
+/* 09/moving on lets calculate the average literacy rate and display the states
 where the average literacy is greater than 90 */
 select state , round(avg(literacy),0) as average_literacy_rate from dataset1
 group by state having average_literacy_rate>90 order by average_literacy_rate desc;
 
 
--- top 3 state showing highest average growth ratio
+-- 10/ top 3 state showing highest average growth ratio
 select state , round(avg(growth)*100,0) as average_growth_rate from dataset1
 group by state order by average_growth_rate desc limit 3;
 
--- bottom 3 state showing lowest average sex ratio
+-- 11/ bottom 3 state showing lowest average sex ratio
 select state , round(avg(sex_ratio),0) as average_sex_ratio from dataset1
 group by state order by average_sex_ratio asc limit 3;
 
 
-/*next lets say we want to display top and bottom 3 states in literacy rate state in 
+/* 12/ next lets say we want to display top and bottom 3 states in literacy rate state in 
 in the same table using union command*/
 
 drop table if exists top_state;
@@ -92,17 +92,53 @@ union
 select * from (select * from bottom_state order by bottomstate asc limit 3) as b;
 
 
--- states starting with letter a or b
+-- 13/ states starting with letter a or b
 select distinct state from dataset1 where lower(state) like 'a%'or lower(state) like 'b%';
 
 -- states starting with letter a and ending with letter m 
 select distinct state from dataset1 where lower(state) like 'a%'and lower(state) like '%m';
 
--- next we will try to determine the total males and females using tables join
-
-select ds1.district,ds1.state,ds1.sex_ratio,ds2.population
+-- 14/ next we will try to determine the total males and females using tables join
+-- first of all let's join the two data sets as one table and call 'c'
+select ds1.district,ds1.state,ds1.sex_ratio/1000 as sex_ratio,ds2.population
 from dataset1 as ds1 inner join dataset2 as ds2
-on ds1.district=ds2.district;
+on ds1.district=ds2.district
+/* next we will be displaying the total number of females and males by doing
+some calculation and using columns from table c 
+##########################################################################
+-- next we are going to do some basic math and logic
+females / males = sex_ratio..............equation01
+females + males = population..............equation02
+females = population - males..............equation03
+-- next we substitute 'females' with 'population - males' from equation03
+into equation01 
+population - males = sex_ratio * males
+population = males * ( sex_ratio + 1 )
+-- finaly we conclude that :
+### males = population / ( sex_ratio + 1 ).....equation04
+-- next we replace 'males' from equation04 with the new value 
+into equation03 or equation01 to get the number of females
+### females = population - ( population / ( sex_ratio + 1 ))....from equation03
+### females= ( population * sex_ratio ) / ( sex_ratio + 1 ).....from equation01
+#########################################################################################*/
+select d.state , sum(d.males) as total_males , sum(d.females) as total_females from
+(select c.district, c.state, round(c.population/(c.sex_ratio+1),0) as males, 
+round((c.population*c.sex_ratio)/(c.sex_ratio + 1),0) as females from 
+(select ds1.district,ds1.state,ds1.sex_ratio/1000 as sex_ratio,ds2.population
+from dataset1 as ds1 inner join dataset2 as ds2
+on ds1.district=ds2.district) as c) as d
+group by d.state ;
+
+-- 15/ total literacy rate
+select d.state, sum(d.lliterate_people) as total_lliterate , sum(d.illiterate_people) as total_illiterate from
+(select c.district, c.state, round(c.literacy_ratio*c.population,0) as lliterate_people,
+round((1-c.literacy_ratio)*c.population,0) as illiterate_people from
+(select ds1.district, ds1.state, ds1.literacy/100 as literacy_ratio, ds2.population
+from dataset1 as ds1 inner join dataset2 as ds2
+on ds1.district=ds2.district) as c) as d 
+group by d.state;
+
+
 
 
 
