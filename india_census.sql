@@ -140,7 +140,7 @@ on ds1.district=ds2.district) as c) as d
 group by d.state;
 
 
--- population in previous census
+-- 16/ population in previous census
 
 select sum(e.previous_census_population) as previous_census_population, sum(e.current_census_population) as current_census_population from
 (select d.state, sum(d.previous_census_population) as previous_census_population, 
@@ -154,11 +154,32 @@ group by d.state) as e;
 
 
 
+-- 17/ population vs area
 
-select c.district ,c.state, round(c.population/1+c.growth,0) as previous_census_population  , 
-c.population as current_census_population, c.growth from 
+select (g.total_area/g.previous_census_population) as previous_census_population_vs_area,
+(g.total_area/g.current_census_population) as current_census_population_vs_area from
+(select g.*, e.total_area from
+(select '1' as keyy, f.* from
+(select sum(e.previous_census_population) as previous_census_population, sum(e.current_census_population) as current_census_population from
+(select d.state, sum(d.previous_census_population) as previous_census_population, 
+sum(d.current_census_population) as current_census_population from
+(select c.district ,c.state, round(c.population/1+c.growth,0) as previous_census_population  , 
+c.population as current_census_population from 
 (select ds1.district, ds1.state, ds1.growth, ds2.population from dataset1 as ds1 inner join dataset2 as ds2
-on ds1.district=ds2.district) as c group by  c.state , c.district
-order by c.growth desc ;
+on ds1.district=ds2.district) as c) as d 
+group by d.state) as e) as f) as g
+inner join  
+(select '1' as keyy ,e0.*, sum(e0.area_km2) as total_area from dataset2 as e0) as e on g.keyy=e.keyy)as g;
+
+
+
+
+-- 18/window 
+-- the task is to output top 3 districts from each state with highest literacy rate
+
+select z.* from
+(select district , state , literacy , rank() over(partition by state order by literacy desc ) as rnk from dataset1) as z where rnk in (1,2,3) order by state;
+
+
 
  
