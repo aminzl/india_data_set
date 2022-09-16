@@ -1,64 +1,41 @@
--- with the help of basic math and logic we are going to calculate the total number of males and females using two variables:
+-- 01/ with the help of basic math and logic we are going to calculate 'the total number of males and females' using two variables:
 sex_ratio and population.
-
 females / males = sex_ratio..............equation01
-
 females + males = population..............equation02
-
 females = population - males..............equation03
-
 -- next we substitute 'females' with 'population - males' from equation03
 into equation01 
-
 population - males = sex_ratio * males
-
 population = males * ( sex_ratio + 1 )
-
 -- finaly we conclude that :
-
 ### males = population / ( sex_ratio + 1 ).....equation04
-
 -- next we replace 'males' from equation04 with the new value 
-
 into equation03 or equation01 to get the number of females
-
 ### females = population - ( population / ( sex_ratio + 1 ))....from equation03
 ### females= ( population * sex_ratio ) / ( sex_ratio + 1 ).....from equation01
 
 ******************************************************************************************************************************
-
+-- 2/ with the help of basic math and logic we are going to calculate 'the total literate and illiterate people' using two variables:
 total literate people / population = literacy_ratio......from equation01
-
 that means :
 ### total literate people = population * literacy_ratio.......from equation02
-
-
 population = total literate people + total illiterate people
-
 we substitute total literate people with its equivalence from equation02 so:
-
 population = ( population * literacy_ratio ) + total illiterate people
-
 total illiterate people = population - ( population * literacy_ratio )
-
 ### total illiterate people = population * ( 1 - literacy_ratio )
 
 ******************************************************************************************************************************
+-- 2/ with the help of basic math and logic we are going to calculate 'the previous population' using two variables:
 
 -- calcaulate the previous census population
-
 the equation that calculate the growth in population is as it follows:
-
 growth = ( current population - previous population) / previous population.............equation01
-
 that means:
-
 growth * previous population = current population - previous population 
 ( growth * previous population ) + previous population  = current population
 ( growth + 1 )previous population = current population
-
 -- -- finaly we conclude that :
-
 ### previous population = current population / ( growth + 1 )
 
 
